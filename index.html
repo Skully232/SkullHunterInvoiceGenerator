@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkullHunter Invoice Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Input Panel -->
+        <div class="input-panel">
+            <div class="app-header">
+                <svg class="app-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Skull Shape -->
+                    <ellipse cx="50" cy="45" rx="30" ry="35" fill="#1a1a2e" stroke="#16c79a" stroke-width="2"/>
+                    <!-- Eye Sockets -->
+                    <ellipse cx="38" cy="40" rx="8" ry="12" fill="#16c79a"/>
+                    <ellipse cx="62" cy="40" rx="8" ry="12" fill="#16c79a"/>
+                    <!-- Nose -->
+                    <path d="M 45 52 L 50 58 L 55 52 Z" fill="#16c79a"/>
+                    <!-- Teeth -->
+                    <rect x="35" y="65" width="6" height="8" fill="#16c79a" rx="1"/>
+                    <rect x="43" y="65" width="6" height="8" fill="#16c79a" rx="1"/>
+                    <rect x="51" y="65" width="6" height="8" fill="#16c79a" rx="1"/>
+                    <rect x="59" y="65" width="6" height="8" fill="#16c79a" rx="1"/>
+                    <!-- Crosshair -->
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#16c79a" stroke-width="1" opacity="0.3"/>
+                    <line x1="10" y1="50" x2="25" y2="50" stroke="#16c79a" stroke-width="2" opacity="0.5"/>
+                    <line x1="75" y1="50" x2="90" y2="50" stroke="#16c79a" stroke-width="2" opacity="0.5"/>
+                    <line x1="50" y1="10" x2="50" y2="25" stroke="#16c79a" stroke-width="2" opacity="0.5"/>
+                    <line x1="50" y1="75" x2="50" y2="90" stroke="#16c79a" stroke-width="2" opacity="0.5"/>
+                </svg>
+                <div class="app-title">
+                    <h1>SKULLHUNTER</h1>
+                    <p class="subtitle">Invoice Generator</p>
+                </div>
+            </div>
+            
+            <!-- Logo Upload -->
+            <section class="form-section">
+                <h2>Company Logo</h2>
+                <input type="file" id="logoUpload" accept="image/png,image/jpeg,image/jpg,image/svg+xml">
+                <p class="help-text">PNG, JPG, or SVG (max 5MB)</p>
+            </section>
+
+            <!-- Business Information -->
+            <section class="form-section">
+                <h2>Your Business Information</h2>
+                <input type="text" id="businessName" placeholder="Business Name">
+                <textarea id="businessAddress" placeholder="Business Address" rows="3"></textarea>
+                <input type="email" id="businessEmail" placeholder="Email">
+                <input type="tel" id="businessPhone" placeholder="Phone">
+            </section>
+
+            <!-- Client Information -->
+            <section class="form-section">
+                <h2>Client Information</h2>
+                <input type="text" id="clientName" placeholder="Client Name">
+                <textarea id="clientAddress" placeholder="Client Address" rows="3"></textarea>
+                <input type="email" id="clientEmail" placeholder="Email">
+                <input type="tel" id="clientPhone" placeholder="Phone">
+            </section>
+
+            <!-- Invoice Metadata -->
+            <section class="form-section">
+                <h2>Invoice Details</h2>
+                <input type="text" id="invoiceNumber" placeholder="Invoice Number">
+                <input type="date" id="invoiceDate">
+            </section>
+
+            <!-- Line Items -->
+            <section class="form-section">
+                <h2>Line Items</h2>
+                <div id="lineItemsContainer"></div>
+                <button id="addItemBtn" class="btn btn-secondary">+ Add Item</button>
+            </section>
+
+            <!-- Tax -->
+            <section class="form-section">
+                <h2>Tax</h2>
+                <div class="tax-input">
+                    <input type="number" id="taxPercentage" placeholder="0" min="0" max="100" step="0.01">
+                    <span>%</span>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="form-section actions">
+                <button id="downloadPdfBtn" class="btn btn-primary">
+                    <span class="btn-icon">📥</span>
+                    Download PDF
+                </button>
+                <button id="printBtn" class="btn btn-secondary">
+                    <span class="btn-icon">🖨️</span>
+                    Print Invoice
+                </button>
+            </section>
+            
+            <div class="app-footer">
+                <p>Powered by SkullHunter © 2024</p>
+            </div>
+        </div>
+
+        <!-- Invoice Preview -->
+        <div class="preview-panel">
+            <div id="invoicePreview" class="invoice">
+                <div class="invoice-header">
+                    <div class="logo-container">
+                        <img id="previewLogo" src="" alt="" style="display: none;">
+                    </div>
+                    <div class="business-info">
+                        <h3 id="previewBusinessName"></h3>
+                        <p id="previewBusinessAddress" class="preserve-linebreaks"></p>
+                        <p id="previewBusinessEmail"></p>
+                        <p id="previewBusinessPhone"></p>
+                    </div>
+                </div>
+
+                <div class="invoice-title">
+                    <h1>INVOICE</h1>
+                    <div class="invoice-meta">
+                        <p><strong>Invoice #:</strong> <span id="previewInvoiceNumber">-</span></p>
+                        <p><strong>Date:</strong> <span id="previewInvoiceDate">-</span></p>
+                    </div>
+                </div>
+
+                <div class="client-section">
+                    <h3>Bill To:</h3>
+                    <div class="client-info">
+                        <p id="previewClientName"></p>
+                        <p id="previewClientAddress" class="preserve-linebreaks"></p>
+                        <p id="previewClientEmail"></p>
+                        <p id="previewClientPhone"></p>
+                    </div>
+                </div>
+
+                <table class="line-items-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="previewLineItems">
+                        <tr>
+                            <td colspan="4" class="empty-state">No items added yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="totals-section">
+                    <div class="totals-row">
+                        <span>Subtotal:</span>
+                        <span id="previewSubtotal">$0.00</span>
+                    </div>
+                    <div class="totals-row">
+                        <span>Tax (<span id="previewTaxPercentage">0</span>%):</span>
+                        <span id="previewTaxAmount">$0.00</span>
+                    </div>
+                    <div class="totals-row total">
+                        <span>Total:</span>
+                        <span id="previewTotal">$0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include jsPDF and html2canvas from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
